@@ -50,7 +50,8 @@ const config: HardhatUserConfig = {
     coinmarketcap: process.env.COINMARKETCAP_API_KEY,
   },
   etherscan: {
-      apiKey: process.env.ETHERSCAN_API_KEY,
+      apiKey: process.env.ETHERSCAN_API_KEY || "",
+      // customChains: [],
   },
   mocha: {
     timeout: 500000, // 500 seconds max for running tests

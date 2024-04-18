@@ -6,6 +6,7 @@ const verify = async (contractAddress: string, args: any[]) => {
         await run("verify:verify", {
             address: contractAddress,
             constructorArguments: args,
+            // console.log("TRYING")
         })
     } catch(e: any){
         if(e.message.toLowerCase().includes("already verified")) {
