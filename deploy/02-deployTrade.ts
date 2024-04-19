@@ -1,7 +1,7 @@
 import { DeployFunction } from "hardhat-deploy/dist/types"
 import { HardhatRuntimeEnvironment } from "hardhat/types"
 import verify from "../utils/verify"
-import { VERIFICATION_BLOCK_CONFIRMATIONS, developmentChains } from "../helper-hardhat-config"
+import { PEDETIN_CA, VERIFICATION_BLOCK_CONFIRMATIONS, developmentChains } from "../helper-hardhat-config"
 
 const deployTrade: DeployFunction = async function ({
     deployments,
@@ -20,7 +20,7 @@ const deployTrade: DeployFunction = async function ({
     log("deploying, pls wait...")
     
 
-    const args: any[] = []
+    const args: any[] = [PEDETIN_CA]
     const trade  = await deploy("Trade", {
         from: deployer,
         args: args,

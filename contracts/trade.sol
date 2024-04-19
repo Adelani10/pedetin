@@ -1,9 +1,6 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.24;
 
-// Uncomment this line to use console.log
-// import "hardhat/console.sol";
-
 import "./pedetin.sol";
 
 error Trade_InsufficientAmount();
@@ -20,7 +17,7 @@ contract Trade {
     event swapped(address indexed owner, uint256 tokenAmount, uint256 ethAmount);
 
     // mapping
-    mapping(address owner => uint256 amountOwned) public depositorToAmountOwned;
+    mapping(address => uint256) public depositorToAmountOwned;
 
     constructor(address _pedetin) {
         pedetin = Pedetin(_pedetin);

@@ -1,21 +1,17 @@
 // import { Provider } from "@ethersproject/abstract-provider"
 // import { assert, expect } from "chai"
-// import { Signer } from "ethers"
-// import { network, deployments, ethers }from "hardhat"
-// import { developmentChains, networkConfig} from "../../helper-hardhat-config"
-// import {NftMarketplace, BasicNft} from "../../typechain-types"
-
-import { ethers, network } from "hardhat";
-import { developmentChains } from "../helper-hardhat-config";
-import { Signer } from "ethers";
-import { Pedetin } from "../typechain-types";
+import { deployments, ethers, getNamedAccounts, network } from "hardhat"
+import { INITIAL_SUPPLY, developmentChains } from "../../helper-hardhat-config"
+import { Signer } from "ethers"
+import { Pedetin } from "../../typechain-types"
+import { expect, assert } from "chai"
 
 //     : describe("Nft Marketplace Unit Tests", function () {
 //           let nftMarketplace: NftMarketplace, nftMarketplaceContract: NftMarketplace, basicNft: BasicNft
 //           const PRICE = ethers.utils.parseEther("0.1")
 //           const TOKEN_ID = 0
-//           let deployer:  Signer 
-//           let user: Signer 
+//           let deployer:  Signer
+//           let user: Signer
 
 //           beforeEach(async () => {
 //               const accounts = await ethers.getSigners() // could also do with getNamedAccounts
@@ -162,10 +158,46 @@ import { Pedetin } from "../typechain-types";
 //           })
 //       })
 
-!developmentChains.includes(network.name) ? describe.skip : describe("Pedetin", () => {
-    let pedetin: Pedetin, deployer: Signer
-    
-    beforeEach(async () => {
-        pedetin = await ethers.getContract("Pedetin", deployer)
-    })
-})
+!developmentChains.includes(network.name)
+    ? describe.skip
+    : describe("Pedetin", () => {
+          let pedetin: Pedetin, deployer: Signer, anotherOwner: Signer
+
+          beforeEach(async () => {
+              const accounts = await ethers.getSigners()
+              deployer = accounts[0]
+              anotherOwner = accounts[1]
+              await deployments.fixture(["all"])
+              pedetin = await ethers.getContract("Pedetin", deployer)
+          })
+
+          describe("constructor", () => {
+              it("Initializes the contract and sets the initial supply", async () => {
+                  const res = await pedetin.totalSupply()
+                  const response = await pedetin.balanceOf(deployer.getAddress())
+                  assert.equal(res.toString(), INITIAL_SUPPLY.toString())
+                  assert.equal(res.toString(), response.toString())
+              })
+          })
+
+          describe("burn", () => {
+              it("reverts if the holder has no token", async () => {
+
+                  await expect (pedetin.connect(anotherOwner).burn(500)).to.be.revertedWith("Pedetin_InsufficientBalance")
+
+                  await expect(pedetin.burn(1200)).to.be.revertedWith("Pedetin_InsufficientBalance")
+              })
+          })
+
+          describe("mint", () => {
+              it("reverts if the to address is the zero-eth address or if the mint amount is equal to or less than zero", async () => {
+                  //   await expect(pedetin.mint(pedetin.address, 100)).to.be.revertedWith(
+                  //       "Pedetin_CannotBeZeroethAddress"
+                  //   )
+
+                  await expect(pedetin.mint(deployer.getAddress(), 0)).to.be.revertedWith(
+                      "Pedetin_CannotMintZeroTokens"
+                  )
+              })
+          })
+      })

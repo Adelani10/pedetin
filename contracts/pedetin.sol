@@ -17,7 +17,7 @@ contract Pedetin is ERC20, Ownable {
         _mint(msg.sender, initialSupply);
     }
 
-    function burn(uint256 amountToBurn) public onlyOwner {
+    function burn(uint256 amountToBurn) public {
         uint256 availableBalance = balanceOf(msg.sender);
         if(availableBalance <= 0) {
             revert Pedetin_InsufficientBalance();
@@ -30,7 +30,7 @@ contract Pedetin is ERC20, Ownable {
         _burn(msg.sender, amountToBurn);
     }
 
-    function mint(address to, uint256 amount) public onlyOwner returns(bool) {
+    function mint(address to, uint256 amount) public {
         if(to == address(0)){
             revert Pedetin_CannotBeZeroethAddress();
         }
@@ -40,6 +40,6 @@ contract Pedetin is ERC20, Ownable {
         }
 
         _mint(to, amount);
-        return true;
     }
+
 }
