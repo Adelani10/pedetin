@@ -181,9 +181,10 @@ import { expect, assert } from "chai"
           })
 
           describe("burn", () => {
-              it("reverts if the holder has no token", async () => {
-
-                  await expect (pedetin.connect(anotherOwner).burn(500)).to.be.revertedWith("Pedetin_InsufficientBalance")
+              it("reverts if the holder has no token or doesn't have enough to burn", async () => {
+                  await expect(pedetin.connect(anotherOwner).burn(500)).to.be.revertedWith(
+                      "Pedetin_InsufficientBalance"
+                  )
 
                   await expect(pedetin.burn(1200)).to.be.revertedWith("Pedetin_InsufficientBalance")
               })
@@ -191,9 +192,6 @@ import { expect, assert } from "chai"
 
           describe("mint", () => {
               it("reverts if the to address is the zero-eth address or if the mint amount is equal to or less than zero", async () => {
-                  //   await expect(pedetin.mint(pedetin.address, 100)).to.be.revertedWith(
-                  //       "Pedetin_CannotBeZeroethAddress"
-                  //   )
 
                   await expect(pedetin.mint(deployer.getAddress(), 0)).to.be.revertedWith(
                       "Pedetin_CannotMintZeroTokens"

@@ -12,18 +12,14 @@ error Pedetin_CannotMintZeroTokens();
 contract Pedetin is ERC20, Ownable {
     uint256 private immutable initialSupply;
 
-    constructor (uint256 _initialSupply) ERC20("Pedetin", "PDT") {
+    constructor(uint256 _initialSupply) ERC20("Pedetin", "PDT") {
         initialSupply = _initialSupply;
         _mint(msg.sender, initialSupply);
     }
 
     function burn(uint256 amountToBurn) public {
         uint256 availableBalance = balanceOf(msg.sender);
-        if(availableBalance <= 0) {
-            revert Pedetin_InsufficientBalance();
-        }
-
-        if(availableBalance < amountToBurn) {
+        if (availableBalance <= 0 || availableBalance < amountToBurn) {
             revert Pedetin_InsufficientBalance();
         }
 
@@ -31,15 +27,14 @@ contract Pedetin is ERC20, Ownable {
     }
 
     function mint(address to, uint256 amount) public {
-        if(to == address(0)){
+        if (to == address(0)) {
             revert Pedetin_CannotBeZeroethAddress();
         }
 
-        if(amount <= 0) {
+        if (amount <= 0) {
             revert Pedetin_CannotMintZeroTokens();
         }
 
         _mint(to, amount);
     }
-
 }
